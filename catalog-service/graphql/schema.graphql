@@ -1,0 +1,12 @@
+type Room {
+    id: ID!
+    name: String!
+    location: String!
+    price: Int!
+    description: String!
+}
+
+type Query {
+    rooms: [Room!]! @all
+    room(id: ID! @eq): Room @find
+}
