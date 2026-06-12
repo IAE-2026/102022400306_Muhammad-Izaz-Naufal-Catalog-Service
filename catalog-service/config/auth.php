@@ -39,7 +39,16 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
+            'driver'   => 'session',
+            'provider' => 'users',
+        ],
+
+        // SSO Guard — JWT-based authentication via external SSO server.
+        // The actual JWT verification is handled by the SsoAuthenticate middleware;
+        // this guard entry tells Laravel which user provider to use when resolving
+        // the authenticated user for SSO-protected routes.
+        'sso' => [
+            'driver'   => 'session',
             'provider' => 'users',
         ],
     ],

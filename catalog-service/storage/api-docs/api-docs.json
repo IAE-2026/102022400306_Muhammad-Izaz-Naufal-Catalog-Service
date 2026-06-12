@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Catalog Service API",
-        "description": "L5 Swagger OpenApi description",
+        "description": "Catalog Service API — Pilih-Pilih Kamar",
         "version": "1.0.0"
     },
     "servers": [
@@ -35,7 +35,7 @@
                 "tags": [
                     "Rooms"
                 ],
-                "summary": "Menampilkan daftar kamar yang dibuat (berdasarkan lokasi & tanggal).",
+                "summary": "Menampilkan daftar kamar (filter berdasarkan lokasi).",
                 "operationId": "1b492e14cbdc859a446992c209170929",
                 "parameters": [
                     {
@@ -61,11 +61,14 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized — invalid or missing Bearer token"
                     }
                 },
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "bearerAuth": []
                     }
                 ]
             },
@@ -73,7 +76,8 @@
                 "tags": [
                     "Rooms"
                 ],
-                "summary": "Menyimpan kamar ke katalog",
+                "summary": "Menambahkan kamar baru ke katalog + SOAP audit + RabbitMQ event",
+                "description": "Add a new room to the catalog + full enterprise integration.\n\nPOST /api/v1/rooms\n\nThis is the main state-changing endpoint. After saving the room:\n1. Calls SoapAuditService (Modul 2) → gets a receipt number.\n2. Calls RabbitMqPublisherService (Modul 3) → broadcasts the event.\n3. Returns the room data with both integration statuses.",
                 "operationId": "0fcc821623ab708a9cd94310cad7971f",
                 "requestBody": {
                     "required": true,
@@ -81,13 +85,26 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "room_id"
+                                    "name",
+                                    "location",
+                                    "price"
                                 ],
                                 "properties": {
-                                    "room_id": {
+                                    "name": {
                                         "type": "string",
-                                        "format": "uuid",
-                                        "example": "550e8400-e29b-41d4-a716-446655440000"
+                                        "example": "Kamar VIP"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Bandung"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 500000
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Kamar VIP dengan pemandangan gunung"
                                     }
                                 },
                                 "type": "object"
@@ -97,15 +114,18 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Room bookmarked successfully"
+                        "description": "Room created with full integration status"
                     },
-                    "404": {
-                        "description": "Room not found"
+                    "401": {
+                        "description": "Unauthorized — invalid or missing Bearer token"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 },
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "bearerAuth": []
                     }
                 ]
             }
@@ -132,13 +152,16 @@
                     "200": {
                         "description": "Data retrieved successfully"
                     },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "404": {
                         "description": "Room not found"
                     }
                 },
                 "security": [
                     {
-                        "ApiKeyAuth": []
+                        "bearerAuth": []
                     }
                 ]
             }
@@ -150,6 +173,12 @@
                 "type": "apiKey",
                 "name": "X-IAE-KEY",
                 "in": "header"
+            },
+            "bearerAuth": {
+                "type": "http",
+                "description": "JWT Bearer token from the central SSO server (Cloud Dosen)",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     },

@@ -34,6 +34,10 @@ return [
             // Always set the `Accept: application/json` header.
             Nuwave\Lighthouse\Http\Middleware\AcceptJson::class,
 
+            // SSO JWT Authentication — verifies Bearer token and sets Auth::user().
+            // This runs BEFORE AttemptAuthentication so the user is already set.
+            \App\Http\Middleware\SsoAuthenticate::class,
+
             // Logs in a user if they are authenticated. In contrast to Laravel's 'auth'
             // middleware, this delegates auth and permission checks to the field level.
             Nuwave\Lighthouse\Http\Middleware\AttemptAuthentication::class,
@@ -61,7 +65,7 @@ return [
     |
     */
 
-    'guards' => null,
+    'guards' => ['sso'],
 
     /*
     |--------------------------------------------------------------------------
