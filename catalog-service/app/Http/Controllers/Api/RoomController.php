@@ -15,16 +15,23 @@ class RoomController extends Controller
 {
     #[OA\Get(
         path: '/rooms',
-        summary: 'Menampilkan daftar kamar (filter berdasarkan lokasi).',
+        summary: 'Menampilkan daftar kamar (filter berdasarkan lokasi & tanggal).',
         tags: ['Rooms'],
-        security: [['bearerAuth' => []]],
+        security: [['ApiKeyAuth' => []]],
         parameters: [
+            new OA\Parameter(
+                name: 'X-IAE-KEY',
+                in: 'header',
+                required: true,
+                schema: new OA\Schema(type: 'string', example: '102022400306'),
+                description: 'NIM Mahasiswa sebagai API Key'
+            ),
             new OA\Parameter(name: 'location', in: 'query', required: false, schema: new OA\Schema(type: 'string'), description: 'Filter berdasarkan lokasi (contoh: Bali)'),
             new OA\Parameter(name: 'date', in: 'query', required: false, schema: new OA\Schema(type: 'string', format: 'date'), description: 'Filter berdasarkan tanggal ketersediaan (YYYY-MM-DD)')
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Success'),
-            new OA\Response(response: 401, description: 'Unauthorized — invalid or missing Bearer token')
+            new OA\Response(response: 200, description: 'Daftar kamar berhasil diambil'),
+            new OA\Response(response: 401, description: 'Unauthorized — X-IAE-KEY missing or invalid')
         ]
     )]
     public function index(Request $request)
@@ -37,20 +44,27 @@ class RoomController extends Controller
 
         $rooms = $query->get();
 
-        return $this->successResponse($rooms, 'Data retrieved successfully');
+        return $this->successResponse($rooms, 'Rooms retrieved successfully');
     }
 
     #[OA\Get(
         path: '/rooms/{id}',
         summary: 'Membuka detail lengkap satu kamar (foto, fasilitas, deskripsi).',
         tags: ['Rooms'],
-        security: [['bearerAuth' => []]],
+        security: [['ApiKeyAuth' => []]],
         parameters: [
+            new OA\Parameter(
+                name: 'X-IAE-KEY',
+                in: 'header',
+                required: true,
+                schema: new OA\Schema(type: 'string', example: '102022400306'),
+                description: 'NIM Mahasiswa sebagai API Key'
+            ),
             new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Data retrieved successfully'),
-            new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 200, description: 'Detail kamar berhasil diambil'),
+            new OA\Response(response: 401, description: 'Unauthorized — X-IAE-KEY missing or invalid'),
             new OA\Response(response: 404, description: 'Room not found')
         ]
     )]
@@ -62,7 +76,7 @@ class RoomController extends Controller
             return $this->errorResponse('Room not found', null, 404);
         }
 
-        return $this->successResponse($room, 'Data retrieved successfully');
+        return $this->successResponse($room, 'Room detail retrieved successfully');
     }
 
     /**
@@ -79,7 +93,16 @@ class RoomController extends Controller
         path: '/rooms',
         summary: 'Menambahkan kamar baru ke katalog + SOAP audit + RabbitMQ event',
         tags: ['Rooms'],
-        security: [['bearerAuth' => []]],
+        security: [['ApiKeyAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'X-IAE-KEY',
+                in: 'header',
+                required: true,
+                schema: new OA\Schema(type: 'string', example: '102022400306'),
+                description: 'NIM Mahasiswa sebagai API Key'
+            )
+        ],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -94,7 +117,7 @@ class RoomController extends Controller
         ),
         responses: [
             new OA\Response(response: 201, description: 'Room created with full integration status'),
-            new OA\Response(response: 401, description: 'Unauthorized — invalid or missing Bearer token'),
+            new OA\Response(response: 401, description: 'Unauthorized — X-IAE-KEY missing or invalid'),
             new OA\Response(response: 422, description: 'Validation error')
         ]
     )]

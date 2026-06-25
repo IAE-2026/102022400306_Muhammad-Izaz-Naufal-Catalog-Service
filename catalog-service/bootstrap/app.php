@@ -18,23 +18,38 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Handle 404 Not Found for API routes — IAE-T2 error wrapper
         $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, \Illuminate\Http\Request $request) {
-            if ($request->is('api/*')) {
+            if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => 'Resource not found',
-                    'errors' => null
+                    'errors'  => null,
                 ], 404);
             }
         });
 
-        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
-            if ($request->is('api/*')) {
+        // Handle validation errors for API routes — IAE-T2 error wrapper
+        $exceptions->render(function (\Illuminate\Validation\ValidationException $e, \Illuminate\Http\Request $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
-                    'status' => 'error',
+                    'status'  => 'error',
                     'message' => $e->getMessage(),
-                    'errors' => null
-                ], 500);
+                    'errors'  => $e->errors(),
+                ], 422);
+            }
+        });
+
+        // Handle generic exceptions for API routes — IAE-T2 error wrapper
+        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => $e->getMessage(),
+                    'errors'  => null,
+                ], $status);
             }
         });
     })->create();

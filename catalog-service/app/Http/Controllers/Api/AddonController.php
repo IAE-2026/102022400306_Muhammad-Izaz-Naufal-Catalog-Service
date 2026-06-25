@@ -14,14 +14,24 @@ class AddonController extends Controller
         summary: 'Menampilkan menu tambahan seperti sarapan atau asuransi.',
         tags: ['Addons'],
         security: [['ApiKeyAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'X-IAE-KEY',
+                in: 'header',
+                required: true,
+                schema: new OA\Schema(type: 'string', example: '102022400306'),
+                description: 'NIM Mahasiswa sebagai API Key'
+            )
+        ],
         responses: [
-            new OA\Response(response: 200, description: 'Data retrieved successfully')
+            new OA\Response(response: 200, description: 'Daftar addon berhasil diambil'),
+            new OA\Response(response: 401, description: 'Unauthorized — X-IAE-KEY missing or invalid')
         ]
     )]
     public function index()
     {
         $addons = Addon::all();
 
-        return $this->successResponse($addons, 'Data retrieved successfully');
+        return $this->successResponse($addons, 'Addons retrieved successfully');
     }
 }

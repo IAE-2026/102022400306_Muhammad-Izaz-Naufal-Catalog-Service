@@ -49,11 +49,8 @@ class SsoAuthenticate
         $token = $request->bearerToken();
 
         if (!$token) {
-            Log::warning('[SSO Middleware] No Bearer token found in request.');
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Unauthorized. Bearer token is required.',
-            ], 401);
+            Log::info('[SSO Middleware] No Bearer token found in request. Proceeding as unauthenticated.');
+            return $next($request);
         }
 
         // ── Step 2: Verify the JWT using JWKS ──

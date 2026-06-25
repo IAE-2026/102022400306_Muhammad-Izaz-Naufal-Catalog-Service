@@ -36,6 +36,7 @@ return [
 
             // SSO JWT Authentication — verifies Bearer token and sets Auth::user().
             // This runs BEFORE AttemptAuthentication so the user is already set.
+            // It allows requests without token to proceed, but validates if token is present.
             \App\Http\Middleware\SsoAuthenticate::class,
 
             // Logs in a user if they are authenticated. In contrast to Laravel's 'auth'

@@ -18,9 +18,24 @@
                 ],
                 "summary": "Menampilkan menu tambahan seperti sarapan atau asuransi.",
                 "operationId": "64df5aae883786ec485e37f8e4180357",
+                "parameters": [
+                    {
+                        "name": "X-IAE-KEY",
+                        "in": "header",
+                        "description": "NIM Mahasiswa sebagai API Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "102022400306"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Data retrieved successfully"
+                        "description": "Daftar addon berhasil diambil"
+                    },
+                    "401": {
+                        "description": "Unauthorized — X-IAE-KEY missing or invalid"
                     }
                 },
                 "security": [
@@ -35,9 +50,19 @@
                 "tags": [
                     "Rooms"
                 ],
-                "summary": "Menampilkan daftar kamar (filter berdasarkan lokasi).",
+                "summary": "Menampilkan daftar kamar (filter berdasarkan lokasi & tanggal).",
                 "operationId": "1b492e14cbdc859a446992c209170929",
                 "parameters": [
+                    {
+                        "name": "X-IAE-KEY",
+                        "in": "header",
+                        "description": "NIM Mahasiswa sebagai API Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "102022400306"
+                        }
+                    },
                     {
                         "name": "location",
                         "in": "query",
@@ -60,15 +85,15 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Daftar kamar berhasil diambil"
                     },
                     "401": {
-                        "description": "Unauthorized — invalid or missing Bearer token"
+                        "description": "Unauthorized — X-IAE-KEY missing or invalid"
                     }
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "ApiKeyAuth": []
                     }
                 ]
             },
@@ -79,6 +104,18 @@
                 "summary": "Menambahkan kamar baru ke katalog + SOAP audit + RabbitMQ event",
                 "description": "Add a new room to the catalog + full enterprise integration.\n\nPOST /api/v1/rooms\n\nThis is the main state-changing endpoint. After saving the room:\n1. Calls SoapAuditService (Modul 2) → gets a receipt number.\n2. Calls RabbitMqPublisherService (Modul 3) → broadcasts the event.\n3. Returns the room data with both integration statuses.",
                 "operationId": "0fcc821623ab708a9cd94310cad7971f",
+                "parameters": [
+                    {
+                        "name": "X-IAE-KEY",
+                        "in": "header",
+                        "description": "NIM Mahasiswa sebagai API Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "102022400306"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -117,7 +154,7 @@
                         "description": "Room created with full integration status"
                     },
                     "401": {
-                        "description": "Unauthorized — invalid or missing Bearer token"
+                        "description": "Unauthorized — X-IAE-KEY missing or invalid"
                     },
                     "422": {
                         "description": "Validation error"
@@ -125,7 +162,7 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "ApiKeyAuth": []
                     }
                 ]
             }
@@ -139,6 +176,16 @@
                 "operationId": "6648acdecabaa361b4a002000e0f9c47",
                 "parameters": [
                     {
+                        "name": "X-IAE-KEY",
+                        "in": "header",
+                        "description": "NIM Mahasiswa sebagai API Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "102022400306"
+                        }
+                    },
+                    {
                         "name": "id",
                         "in": "path",
                         "required": true,
@@ -150,10 +197,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Data retrieved successfully"
+                        "description": "Detail kamar berhasil diambil"
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "Unauthorized — X-IAE-KEY missing or invalid"
                     },
                     "404": {
                         "description": "Room not found"
@@ -161,7 +208,7 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "ApiKeyAuth": []
                     }
                 ]
             }
