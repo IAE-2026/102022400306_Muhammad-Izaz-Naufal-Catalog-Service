@@ -126,7 +126,7 @@ return [
         /*
          * Setting to true enables query caching.
          */
-        'enable' => env('LIGHTHOUSE_QUERY_CACHE_ENABLE', true),
+        'enable' => false,
 
         /*
          * Configures which mechanism to use for the query cache.

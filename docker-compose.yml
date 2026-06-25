@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
+    command: sh -c "php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=8000"
     volumes:
       - ./catalog-service:/var/www
     depends_on:
