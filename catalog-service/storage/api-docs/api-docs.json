@@ -350,6 +350,153 @@
                     }
                 ]
             }
+        },
+        "/sso/me": {
+            "get": {
+                "tags": [
+                    "SSO"
+                ],
+                "summary": "Get the authenticated SSO user profile",
+                "description": "Returns the current user's profile, including their local role, after JWT verification.",
+                "operationId": "ssoMe",
+                "parameters": [
+                    {
+                        "name": "X-IAE-KEY",
+                        "in": "header",
+                        "description": "NIM Mahasiswa sebagai API Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "102022400306"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Authenticated user profile",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "warga11"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "warga11@ktp.iae.id"
+                                                },
+                                                "sso_sub": {
+                                                    "type": "string",
+                                                    "example": "abc-123-def"
+                                                },
+                                                "role": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 2
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "viewer"
+                                                        },
+                                                        "display_name": {
+                                                            "type": "string",
+                                                            "example": "Viewer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized — missing or invalid Bearer token"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    },
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/sso/verify": {
+            "post": {
+                "tags": [
+                    "SSO"
+                ],
+                "summary": "Verify a JWT token and return decoded payload",
+                "description": "Accepts a Bearer token, verifies it against the JWKS, and returns the decoded claims. Useful for debugging.",
+                "operationId": "ssoVerify",
+                "parameters": [
+                    {
+                        "name": "X-IAE-KEY",
+                        "in": "header",
+                        "description": "NIM Mahasiswa sebagai API Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "102022400306"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token is valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Token is valid."
+                                        },
+                                        "payload": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token is invalid or expired"
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    },
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -368,6 +515,10 @@
         }
     },
     "tags": [
+        {
+            "name": "SSO",
+            "description": "Federated SSO authentication endpoints"
+        },
         {
             "name": "Addons",
             "description": "Addons"
