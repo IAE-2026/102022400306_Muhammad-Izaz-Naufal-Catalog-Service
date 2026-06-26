@@ -7,56 +7,50 @@ use App\Services\JwksService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use OpenApi\Attributes as OA;
 
-/**
- * SsoController
- *
- * Provides endpoints related to the Federated SSO module:
- * - Verify a Bearer token and return the decoded payload.
- * - Return the currently authenticated SSO user's profile.
- *
- * These endpoints are useful for debugging and for the frontend
- * to confirm the SSO session is active.
- *
- * @OA\Tag(
- *     name="SSO",
- *     description="Federated SSO authentication endpoints"
- * )
- */
+#[OA\Tag(name: 'SSO', description: 'Federated SSO authentication endpoints')]
 class SsoController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/v1/sso/me",
-     *     operationId="ssoMe",
-     *     tags={"SSO"},
-     *     summary="Get the authenticated SSO user profile",
-     *     description="Returns the current user's profile, including their local role, after JWT verification.",
-     *     security={{"bearerAuth":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Authenticated user profile",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="name", type="string", example="warga11"),
-     *                 @OA\Property(property="email", type="string", example="warga11@ktp.iae.id"),
-     *                 @OA\Property(property="sso_sub", type="string", example="abc-123-def"),
-     *                 @OA\Property(property="role", type="object",
-     *                     @OA\Property(property="id", type="integer", example=2),
-     *                     @OA\Property(property="name", type="string", example="viewer"),
-     *                     @OA\Property(property="display_name", type="string", example="Viewer")
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized — missing or invalid Bearer token"
-     *     )
-     * )
-     */
+    #[OA\Get(
+        path: '/sso/me',
+        operationId: 'ssoMe',
+        summary: 'Get the authenticated SSO user profile',
+        description: 'Returns the current user\'s profile, including their local role, after JWT verification.',
+        tags: ['SSO'],
+        security: [['bearerAuth' => []], ['ApiKeyAuth' => []]],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Authenticated user profile',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(
+                            property: 'data',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'name', type: 'string', example: 'warga11'),
+                                new OA\Property(property: 'email', type: 'string', example: 'warga11@ktp.iae.id'),
+                                new OA\Property(property: 'sso_sub', type: 'string', example: 'abc-123-def'),
+                                new OA\Property(
+                                    property: 'role',
+                                    type: 'object',
+                                    properties: [
+                                        new OA\Property(property: 'id', type: 'integer', example: 2),
+                                        new OA\Property(property: 'name', type: 'string', example: 'viewer'),
+                                        new OA\Property(property: 'display_name', type: 'string', example: 'Viewer'),
+                                    ]
+                                )
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Unauthorized — missing or invalid Bearer token or API Key')
+        ]
+    )]
     public function me(Request $request): JsonResponse
     {
         $user = Auth::user();
@@ -84,29 +78,28 @@ class SsoController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/v1/sso/verify",
-     *     operationId="ssoVerify",
-     *     tags={"SSO"},
-     *     summary="Verify a JWT token and return decoded payload",
-     *     description="Accepts a Bearer token, verifies it against the JWKS, and returns the decoded claims. Useful for debugging.",
-     *     security={{"bearerAuth":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Token is valid",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="Token is valid."),
-     *             @OA\Property(property="payload", type="object")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Token is invalid or expired"
-     *     )
-     * )
-     */
+    #[OA\Post(
+        path: '/sso/verify',
+        operationId: 'ssoVerify',
+        summary: 'Verify a JWT token and return decoded payload',
+        description: 'Accepts a Bearer token, verifies it against the JWKS, and returns the decoded claims. Useful for debugging.',
+        tags: ['SSO'],
+        security: [['bearerAuth' => []], ['ApiKeyAuth' => []]],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Token is valid',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Token is valid.'),
+                        new OA\Property(property: 'payload', type: 'object')
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Token is invalid or expired or API Key is missing')
+        ]
+    )]
     public function verify(Request $request, JwksService $jwksService): JsonResponse
     {
         $token = $request->bearerToken();
