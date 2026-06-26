@@ -32,7 +32,43 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Daftar addon berhasil diambil"
+                        "description": "Daftar addon berhasil diambil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Addons retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "service_name": {
+                                                    "type": "string",
+                                                    "example": "Catalog-Service"
+                                                },
+                                                "api_version": {
+                                                    "type": "string",
+                                                    "example": "v1"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthorized — X-IAE-KEY missing or invalid"
@@ -85,7 +121,43 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Daftar kamar berhasil diambil"
+                        "description": "Daftar kamar berhasil diambil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Rooms retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "service_name": {
+                                                    "type": "string",
+                                                    "example": "Catalog-Service"
+                                                },
+                                                "api_version": {
+                                                    "type": "string",
+                                                    "example": "v1"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthorized — X-IAE-KEY missing or invalid"
@@ -151,7 +223,40 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Room created with full integration status"
+                        "description": "Room created with full integration status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Room created and integration completed"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "service_name": {
+                                                    "type": "string",
+                                                    "example": "Catalog-Service"
+                                                },
+                                                "api_version": {
+                                                    "type": "string",
+                                                    "example": "v1"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthorized — X-IAE-KEY missing or invalid"
@@ -197,7 +302,40 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Detail kamar berhasil diambil"
+                        "description": "Detail kamar berhasil diambil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Room detail retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "service_name": {
+                                                    "type": "string",
+                                                    "example": "Catalog-Service"
+                                                },
+                                                "api_version": {
+                                                    "type": "string",
+                                                    "example": "v1"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthorized — X-IAE-KEY missing or invalid"

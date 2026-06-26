@@ -30,7 +30,25 @@ class RoomController extends Controller
             new OA\Parameter(name: 'date', in: 'query', required: false, schema: new OA\Schema(type: 'string', format: 'date'), description: 'Filter berdasarkan tanggal ketersediaan (YYYY-MM-DD)')
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Daftar kamar berhasil diambil'),
+            new OA\Response(
+                response: 200,
+                description: 'Daftar kamar berhasil diambil',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Rooms retrieved successfully'),
+                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(type: 'object')),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'service_name', type: 'string', example: 'Catalog-Service'),
+                                new OA\Property(property: 'api_version', type: 'string', example: 'v1'),
+                            ]
+                        )
+                    ]
+                )
+            ),
             new OA\Response(response: 401, description: 'Unauthorized — X-IAE-KEY missing or invalid')
         ]
     )]
@@ -63,7 +81,25 @@ class RoomController extends Controller
             new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string', format: 'uuid'))
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Detail kamar berhasil diambil'),
+            new OA\Response(
+                response: 200,
+                description: 'Detail kamar berhasil diambil',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Room detail retrieved successfully'),
+                        new OA\Property(property: 'data', type: 'object'),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'service_name', type: 'string', example: 'Catalog-Service'),
+                                new OA\Property(property: 'api_version', type: 'string', example: 'v1'),
+                            ]
+                        )
+                    ]
+                )
+            ),
             new OA\Response(response: 401, description: 'Unauthorized — X-IAE-KEY missing or invalid'),
             new OA\Response(response: 404, description: 'Room not found')
         ]
@@ -116,7 +152,25 @@ class RoomController extends Controller
             )
         ),
         responses: [
-            new OA\Response(response: 201, description: 'Room created with full integration status'),
+            new OA\Response(
+                response: 201,
+                description: 'Room created with full integration status',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Room created and integration completed'),
+                        new OA\Property(property: 'data', type: 'object'),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'service_name', type: 'string', example: 'Catalog-Service'),
+                                new OA\Property(property: 'api_version', type: 'string', example: 'v1'),
+                            ]
+                        )
+                    ]
+                )
+            ),
             new OA\Response(response: 401, description: 'Unauthorized — X-IAE-KEY missing or invalid'),
             new OA\Response(response: 422, description: 'Validation error')
         ]

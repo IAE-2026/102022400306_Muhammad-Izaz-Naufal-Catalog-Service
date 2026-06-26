@@ -24,7 +24,25 @@ class AddonController extends Controller
             )
         ],
         responses: [
-            new OA\Response(response: 200, description: 'Daftar addon berhasil diambil'),
+            new OA\Response(
+                response: 200,
+                description: 'Daftar addon berhasil diambil',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'status', type: 'string', example: 'success'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Addons retrieved successfully'),
+                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(type: 'object')),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'service_name', type: 'string', example: 'Catalog-Service'),
+                                new OA\Property(property: 'api_version', type: 'string', example: 'v1'),
+                            ]
+                        )
+                    ]
+                )
+            ),
             new OA\Response(response: 401, description: 'Unauthorized — X-IAE-KEY missing or invalid')
         ]
     )]
