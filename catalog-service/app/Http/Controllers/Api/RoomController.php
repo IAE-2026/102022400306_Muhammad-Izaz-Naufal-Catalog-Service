@@ -180,12 +180,18 @@ class RoomController extends Controller
         SoapAuditService $soapAuditService,
         RabbitMqPublisherService $rabbitMqService
     ) {
-        $validated = $request->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'name'        => 'required|string|max:255',
             'location'    => 'required|string|max:255',
             'price'       => 'required|numeric|min:0',
             'description' => 'sometimes|string|max:2000',
         ]);
+
+        if ($validator->fails()) {
+            return $this->errorResponse('Validation error', $validator->errors(), 422);
+        }
+
+        $validated = $validator->validated();
 
         // ── Step 1: Create the room in the database ──
         $room = Room::create([
