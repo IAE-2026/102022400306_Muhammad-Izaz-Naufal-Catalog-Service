@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
 class AddonController extends Controller
 {
     #[OA\Get(
-        path: '/addons',
+        path: '/api/v1/addons',
         summary: 'Menampilkan menu tambahan seperti sarapan atau asuransi.',
         tags: ['Addons'],
         security: [['ApiKeyAuth' => []]],

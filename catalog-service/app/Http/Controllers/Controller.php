@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
     description: "Catalog Service API — Pilih-Pilih Kamar",
     title: "Catalog Service API"
 )]
-#[OA\Server(url: '/api/v1')]
+#[OA\Server(url: '/')]
 #[OA\SecurityScheme(
     securityScheme: "ApiKeyAuth",
     type: "apiKey",

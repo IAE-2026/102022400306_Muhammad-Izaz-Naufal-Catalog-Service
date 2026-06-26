@@ -5,19 +5,6 @@ use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\AddonController;
 use App\Http\Controllers\Api\SsoController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| All routes under /api/v1 are protected by the 'api.key' middleware
-| which validates the X-IAE-KEY header against the student NIM.
-|
-| SSO-specific routes (e.g. /sso/me, /sso/verify) additionally
-| require a valid JWT Bearer token via the 'sso.auth' middleware.
-|
-*/
-
 // ── IAE-T2 Contract Routes (X-IAE-KEY required) ──
 Route::prefix('v1')->middleware('api.key')->group(function () {
 

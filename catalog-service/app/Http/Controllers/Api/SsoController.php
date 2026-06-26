@@ -23,7 +23,7 @@ use OpenApi\Attributes as OA;
 class SsoController extends Controller
 {
     #[OA\Get(
-        path: '/sso/me',
+        path: '/api/v1/sso/me',
         operationId: 'ssoMe',
         summary: 'Get the authenticated SSO user profile',
         description: "Returns the current user's profile, including their local role, after JWT verification.",
@@ -98,7 +98,7 @@ class SsoController extends Controller
     }
 
     #[OA\Post(
-        path: '/sso/verify',
+        path: '/api/v1/sso/verify',
         operationId: 'ssoVerify',
         summary: 'Verify a JWT token and return decoded payload',
         description: 'Accepts a Bearer token, verifies it against the JWKS, and returns the decoded claims. Useful for debugging.',

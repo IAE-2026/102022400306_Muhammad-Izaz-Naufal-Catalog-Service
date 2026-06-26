@@ -14,7 +14,7 @@ use OpenApi\Attributes as OA;
 class RoomController extends Controller
 {
     #[OA\Get(
-        path: '/rooms',
+        path: '/api/v1/rooms',
         summary: 'Menampilkan daftar kamar (filter berdasarkan lokasi & tanggal).',
         tags: ['Rooms'],
         security: [['ApiKeyAuth' => []]],
@@ -66,7 +66,7 @@ class RoomController extends Controller
     }
 
     #[OA\Get(
-        path: '/rooms/{id}',
+        path: '/api/v1/rooms/{id}',
         summary: 'Membuka detail lengkap satu kamar (foto, fasilitas, deskripsi).',
         tags: ['Rooms'],
         security: [['ApiKeyAuth' => []]],
@@ -126,7 +126,7 @@ class RoomController extends Controller
      * 3. Returns the room data with both integration statuses.
      */
     #[OA\Post(
-        path: '/rooms',
+        path: '/api/v1/rooms',
         summary: 'Menambahkan kamar baru ke katalog + SOAP audit + RabbitMQ event',
         tags: ['Rooms'],
         security: [['ApiKeyAuth' => []]],
@@ -181,10 +181,10 @@ class RoomController extends Controller
         RabbitMqPublisherService $rabbitMqService
     ) {
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'name'        => 'required|string|max:255',
-            'location'    => 'required|string|max:255',
-            'price'       => 'required|numeric|min:0',
-            'description' => 'sometimes|string|max:2000',
+            'name'        => 'nullable|string|max:255',
+            'location'    => 'nullable|string|max:255',
+            'price'       => 'nullable|numeric|min:0',
+            'description' => 'nullable|string|max:2000',
         ]);
 
         if ($validator->fails()) {
@@ -195,9 +195,9 @@ class RoomController extends Controller
 
         // ── Step 1: Create the room in the database ──
         $room = Room::create([
-            'name'        => $validated['name'],
-            'location'    => $validated['location'],
-            'price'       => $validated['price'],
+            'name'        => $validated['name'] ?? 'Default Room',
+            'location'    => $validated['location'] ?? 'Unknown',
+            'price'       => (float) ($validated['price'] ?? 0),
             'description' => $validated['description'] ?? '',
         ]);
 

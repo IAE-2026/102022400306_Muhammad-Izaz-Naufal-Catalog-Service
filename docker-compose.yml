@@ -5,13 +5,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: catalog-service-app
     restart: unless-stopped
     ports:
       - "8000:8000"
-    command: sh -c "php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=8000"
-    volumes:
-      - ./catalog-service:/var/www
+    command: sh -c "until php artisan migrate --force; do echo 'wait db'; sleep 3; done; php artisan db:seed --force || true; php artisan l5-swagger:generate || true; php artisan serve --host=0.0.0.0 --port=8000"
+    environment:
+      APP_NAME: "Catalog Service"
+      APP_ENV: local
+      APP_KEY: base64:3p83O1g9Fk72V4q8Xg50bHw1R2z5N4Y7U2g9L9s1F1g=
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: catalogroom
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      IAE_API_KEY: 102022400306
     depends_on:
       - db
     networks:
@@ -19,7 +29,6 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: catalog-service-db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: catalogroom
@@ -33,7 +42,6 @@ services:
 
   phpmyadmin:
     image: phpmyadmin:latest
-    container_name: catalog-service-phpmyadmin
     restart: unless-stopped
     ports:
       - "8081:80"
